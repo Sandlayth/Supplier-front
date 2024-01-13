@@ -6,7 +6,6 @@ let authToken = localStorage.getItem('authToken');
 
 export const authenticateOnce = async (email, password) => {
   try {
-    // Replace 'YOUR_AUTH_API_ENDPOINT' with your actual authentication API endpoint
     const response = await axios.post(`${API_ENDPOINT}/users/login`, {
       email,
       password,
@@ -39,6 +38,12 @@ export const authenticatedAxios = async (url, method = 'get', data) => {
 
     return response.data;
   } catch (error) {
-    throw new Error('Request failed');
+    if (error.response && error.response.status === 401) {
+      // Clear token and redirect to login on authentication error
+      localStorage.removeItem('authToken');
+      window.location.href = '/'; // Redirect to login page
+    } else {
+      throw new Error('Request failed');
+    }
   }
 };

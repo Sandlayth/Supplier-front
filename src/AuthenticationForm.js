@@ -2,11 +2,14 @@
 import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import { authenticateOnce } from './api';
 
 const AuthenticationForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
+  const navigate = useNavigate();
   const mutation = useMutation(() => authenticateOnce(email, password));
 
   const handleLogin = async (e) => {
@@ -15,6 +18,7 @@ const AuthenticationForm = () => {
     try {
       const token = await mutation.mutateAsync();
       console.log('Authentication successful. Token:', token);
+      navigate('/purchases'); // Redirect to purchases page on successful login
     } catch (error) {
       console.error('Authentication error:', error.message);
     }
